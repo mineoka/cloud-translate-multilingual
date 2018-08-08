@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>言語変換入力フォーム</title>
+<meta name="description" content="">
+
+<style>
+table th,
+table td{
+  padding: 5px;
+  text-align: left;
+}
+table textarea{
+	border: 1px solid #aaa;
+	padding: 8px;
+	border-radius: 3px;
+}
+</style>
+
+</head>
+<body>
+	<section>
+    <h1>Cloud Translation API</h1>
+		<form id="form" name="contact">
+  		<table>
+  			<tbody>
+  				<tr>
+  					<th>変換元テキスト<br>（日本語）</th>
+  					<td><textarea name="original" id="original" cols="50" rows="5"></textarea></td>
+  				</tr>
+  				<tr>
+  					<th>変換後テキスト<br>（英語）</th>
+  					<td><textarea name="conversion" id="conversion_en" cols="50" rows="5"></textarea></td>
+  				</tr>
+  				<tr>
+  					<th>変換後テキスト<br>（中国語：簡体）</th>
+  					<td><textarea name="conversion" id="conversion_zh-CN" cols="50" rows="5"></textarea></td>
+  				</tr>
+  				<tr>
+  					<th>変換後テキスト<br>（中国語：繁体）</th>
+  					<td><textarea name="conversion" id="conversion_zh-TW" cols="50" rows="5"></textarea></td>
+  				</tr>
+  				<tr>
+  					<th>変換後テキスト<br>（韓国語）</th>
+  					<td><textarea name="conversion" id="conversion_ko" cols="50" rows="5"></textarea></td>
+  				</tr>
+  			</tbody>
+  		</table>
+
+  		<div class="btn">
+  			<input type="button" id="translate" value="変換する">
+  		</div>
+		</form>
+	</section>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script>
+    $(function(){
+    	$("#translate").click(function(){
+        // 初期処理
+        var original_text = $("#original").val();
+        var conversion_text = "";
+        $('#conversion').val = "";
+
+        // 変換プログラム非同期実行
+    		$.post('./request_translate.php',{
+    			text: original_text},
+    				function(data){
+    					// 変換成功
+              if(data !== ""){
+                // カンマ区切りで分割
+                result = JSON.parse(data);
+                Object.keys(result).forEach(function(key) {
+                  // 変換後の文字列をセット
+                  $('#conversion_' + key).val(result[key]);
+                });
+              }
+    				});
+    	});
+    });
+  </script>
+</body>
